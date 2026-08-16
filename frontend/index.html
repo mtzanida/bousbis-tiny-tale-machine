@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Create a tiny personalised bedtime story with a little serverless magic." />
+    <title>Bousbi's Tiny Tale Machine</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="style.css" />
+    <script src="config.js" defer></script>
+    <script src="app.js" defer></script>
+  </head>
+  <body>
+    <div class="sky" aria-hidden="true">
+      <span class="star star-one">✦</span><span class="star star-two">✧</span>
+      <span class="star star-three">✦</span><span class="moon">☾</span>
+    </div>
+
+    <main class="page-shell">
+      <header class="hero">
+        <p class="eyebrow"><span></span> A little serverless magic <span></span></p>
+        <h1>Bousbi’s Tiny<br /><em>Tale Machine</em></h1>
+        <p class="intro">Choose a few ingredients and create a one-of-a-kind bedtime adventure for your little dreamer.</p>
+      </header>
+
+      <section class="maker-card" aria-labelledby="maker-title">
+        <div class="card-heading">
+          <div class="book-icon" aria-hidden="true">☁</div>
+          <div>
+            <p class="step">Your story ingredients</p>
+            <h2 id="maker-title">Let’s make some magic</h2>
+          </div>
+        </div>
+
+        <form id="story-form">
+          <div class="form-grid">
+            <label>
+              Little dreamer’s name
+              <input id="name" name="name" type="text" maxlength="30" placeholder="e.g. Anastasia" required />
+            </label>
+
+            <label>
+              Favourite animal
+              <select id="animal" name="animal">
+                <option value="tiny blue elephant">Tiny blue elephant</option>
+                <option value="curious little fox">Curious little fox</option>
+                <option value="sleepy moon bunny">Sleepy moon bunny</option>
+                <option value="brave baby dragon">Brave baby dragon</option>
+                <option value="gentle cloud bear">Gentle cloud bear</option>
+              </select>
+            </label>
+
+            <label>
+              Magical place
+              <select id="place" name="place">
+                <option value="the Castle Above the Clouds">Castle Above the Clouds</option>
+                <option value="the Whispering Forest">Whispering Forest</option>
+                <option value="the Moonlight Garden">Moonlight Garden</option>
+                <option value="the Rainbow Islands">Rainbow Islands</option>
+                <option value="the Kingdom of Lost Stars">Kingdom of Lost Stars</option>
+              </select>
+            </label>
+
+            <fieldset>
+              <legend>Story mood</legend>
+              <div class="mood-options">
+                <label><input type="radio" name="mood" value="magical" checked /><span>✨ Magical</span></label>
+                <label><input type="radio" name="mood" value="calming" /><span>🌙 Calming</span></label>
+                <label><input type="radio" name="mood" value="funny" /><span>🎈 Funny</span></label>
+                <label><input type="radio" name="mood" value="adventurous" /><span>🧭 Adventurous</span></label>
+              </div>
+            </fieldset>
+          </div>
+
+          <button class="create-button" type="submit">
+            <span class="button-label">Create my tiny tale</span>
+            <span aria-hidden="true">✦</span>
+          </button>
+          <p id="status" class="status" role="status" aria-live="polite"></p>
+        </form>
+      </section>
+
+      <section id="story-card" class="story-card" hidden aria-labelledby="story-title">
+        <div class="story-topline">
+          <p>Once upon a cloud…</p>
+          <button id="copy-button" class="text-button" type="button">Copy story</button>
+        </div>
+        <h2 id="story-title">A tiny tale for <span id="story-name"></span></h2>
+        <div id="story-text" class="story-text"></div>
+        <button id="again-button" class="again-button" type="button">Create another tale</button>
+      </section>
+
+      <footer>
+        <p>Built with care, Terraform &amp; AWS Lambda ☁</p>
+        <p class="small">No stories are stored. Every tale disappears into the clouds.</p>
+      </footer>
+    </main>
+  </body>
+</html>

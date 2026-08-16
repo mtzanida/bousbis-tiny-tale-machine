@@ -1,0 +1,8 @@
+.DS_Store
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfplan
+terraform/lambda_function.zip
+__pycache__/
+*.pyc
