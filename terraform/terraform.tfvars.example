@@ -1,4 +1,4 @@
 aws_region      = "eu-central-1"
 project_name    = "bousbi-tiny-tale-machine"
-allowed_origin  = "https://YOUR-USERNAME.github.io"
+allowed_origin  = "https://mtzanida.github.io"
 max_concurrency = 10
