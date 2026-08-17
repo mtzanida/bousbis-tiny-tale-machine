@@ -21,9 +21,3 @@ variable "max_concurrency" {
   type        = number
   default     = 10
 }
-
-variable "max_concurrency" {
-  description = "Maximum number of simultaneous Lambda executions. Limits blast radius from abuse or traffic spikes."
-  type        = number
-  default     = 10
-}
