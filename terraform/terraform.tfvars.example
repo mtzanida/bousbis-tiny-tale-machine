@@ -1,3 +1,4 @@
-aws_region     = "eu-central-1"
-project_name   = "bousbi-tiny-tale-machine"
-allowed_origin = "*"
+aws_region      = "eu-central-1"
+project_name    = "bousbi-tiny-tale-machine"
+allowed_origin  = "*"
+max_concurrency = 10

@@ -15,3 +15,9 @@ variable "allowed_origin" {
   type        = string
   default     = "*"
 }
+
+variable "max_concurrency" {
+  description = "Maximum number of simultaneous Lambda executions. Limits blast radius from abuse or traffic spikes."
+  type        = number
+  default     = 10
+}

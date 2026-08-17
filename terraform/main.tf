@@ -42,15 +42,16 @@ resource "aws_cloudwatch_log_group" "lambda" {
 }
 
 resource "aws_lambda_function" "story_generator" {
-  filename         = data.archive_file.lambda.output_path
-  function_name    = var.project_name
-  role             = aws_iam_role.lambda.arn
-  handler          = "lambda_function.lambda_handler"
-  runtime          = "python3.13"
-  architectures    = ["arm64"]
-  memory_size      = 128
-  timeout          = 5
-  source_code_hash = data.archive_file.lambda.output_base64sha256
+  filename                       = data.archive_file.lambda.output_path
+  function_name                  = var.project_name
+  role                           = aws_iam_role.lambda.arn
+  handler                        = "lambda_function.lambda_handler"
+  runtime                        = "python3.13"
+  architectures                  = ["arm64"]
+  memory_size                    = 128
+  timeout                        = 5
+  source_code_hash               = data.archive_file.lambda.output_base64sha256
+  reserved_concurrent_executions = var.max_concurrency
 
   depends_on = [
     aws_iam_role_policy_attachment.basic_execution,
