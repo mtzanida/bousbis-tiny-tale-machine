@@ -3,7 +3,7 @@ provider "aws" {
 
   default_tags {
     tags = {
-      Project   = "Bousbi's Tiny Tale Machine"
+      Project   = "Bousbis Tiny Tale Machine"
       ManagedBy = "Terraform"
       Challenge = "AWS Weekend Creative Challenge"
     }
