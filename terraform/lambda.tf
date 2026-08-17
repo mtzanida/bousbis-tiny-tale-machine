@@ -14,8 +14,10 @@ resource "aws_lambda_function" "story_generator" {
   architectures                  = ["arm64"]
   memory_size                    = 128
   timeout                        = 5
-  source_code_hash               = data.archive_file.lambda.output_base64sha256
-  reserved_concurrent_executions = var.max_concurrency
+  source_code_hash = data.archive_file.lambda.output_base64sha256
+
+  # Uncomment after requesting a Lambda concurrency quota increase (Service Quotas → Lambda → Concurrent executions).
+  # reserved_concurrent_executions = var.max_concurrency
 
   depends_on = [
     aws_iam_role_policy_attachment.basic_execution,

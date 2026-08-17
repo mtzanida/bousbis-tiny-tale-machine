@@ -11,9 +11,9 @@ variable "project_name" {
 }
 
 variable "allowed_origin" {
-  description = "Frontend origin allowed by CORS. Use the GitHub Pages origin after the first deployment."
+  description = "Frontend origin allowed by CORS. Set to your GitHub Pages domain, e.g. https://YOUR-USERNAME.github.io"
   type        = string
-  default     = "*"
+  default     = "https://mtzanida.github.io"
 }
 
 variable "max_concurrency" {
