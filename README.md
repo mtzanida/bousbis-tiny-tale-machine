@@ -1,100 +1,147 @@
 # Bousbi's Tiny Tale Machine ☁️✨
 
-A small serverless application that creates personalised bedtime stories for children. Built for the **AWS Builder Center Weekend Creative Challenge**.
+> *A bedtime story, just for you — no AI, no database, no fuss.*
 
-The idea was inspired by my daughter, Anastasia—our little "Bousbi"—and by my wish to combine a new chapter of motherhood with serverless learning.
+A serverless app that generates personalised bedtime stories for children. Type a name, pick an animal, a place, and a mood — and a unique story appears in seconds.
 
-## Architecture
+Built for the **AWS Builder Center Weekend Creative Challenge**, and inspired by my daughter Anastasia — our little "Bousbi" 🐑 — and by my wish to combine a new chapter of motherhood with serverless learning.
+
+🌐 **Live demo:** [mtzanida.github.io/bousbis-tiny-tale-machine](https://mtzanida.github.io/bousbis-tiny-tale-machine/)
+
+---
+
+## ✨ How stories are made
+
+Each story is assembled from five hand-written narrative fragments, picked at random and personalised with the child's name, animal, and place:
+
+```
+Opening  →  Adventure  →  Challenge  →  Solution  →  Ending
+```
+
+The four moods — **magical**, **calming**, **funny**, and **adventurous** — each have their own distinct set of openings, challenges, and endings. No two stories are the same, and nothing is ever stored.
+
+---
+
+## 🏗️ Architecture
 
 ```mermaid
 flowchart LR
-    User --> Pages[GitHub Pages]
-    Pages --> URL[AWS Lambda Function URL]
-    URL --> Lambda[AWS Lambda]
-    Lambda --> Logs[Amazon CloudWatch]
+    User --> Pages[GitHub Pages\nfrontend]
+    Pages -->|HTTPS POST| URL[Lambda Function URL]
+    URL --> Lambda[AWS Lambda\nPython 3.13 · arm64]
+    Lambda --> Logs[Amazon CloudWatch Logs\n7-day retention]
 ```
 
-The frontend is hosted for free on GitHub Pages. The story generator runs on AWS Lambda and is exposed through a Lambda Function URL. Terraform provisions all AWS resources.
+| Layer | Technology |
+|---|---|
+| Frontend | HTML + CSS + vanilla JS, hosted on GitHub Pages |
+| Backend | AWS Lambda (Python 3.13, arm64, 128 MB, 5 s timeout) |
+| Endpoint | Lambda Function URL — no API Gateway needed |
+| Logs | Amazon CloudWatch Logs (7-day retention) |
+| IAM | Least-privilege execution role |
+| IaC | Terraform ≥ 1.6 |
+| CI/CD | GitHub Actions — auto-deploys frontend on every push |
 
-## AWS resources
+---
 
-- **AWS Lambda** — runs the Python story generator.
-- **AWS IAM** — provides a least-purpose execution role for Lambda.
-- **Amazon CloudWatch Logs** — stores function logs for seven days.
-- **Lambda Function URL** — provides the public HTTPS endpoint with CORS.
+## 📁 Project structure
 
-No database, API Gateway, AI model, or paid third-party API is required. Stories are generated in memory and are never stored.
+```text
+.
+├── .github/
+│   └── workflows/
+│       └── deploy-pages.yml      # Auto-deploys frontend to GitHub Pages
+├── frontend/
+│   ├── index.html                # Story form and result display
+│   ├── style.css                 # Styling
+│   ├── config.js                 # Lambda URL (set after terraform apply)
+│   └── app.js                   # Fetch call and DOM logic
+├── lambda/
+│   ├── lambda_function.py        # Story generator + Lambda handler
+│   └── test_lambda_function.py  # Unit tests
+├── terraform/
+│   ├── main.tf                   # All AWS resources
+│   ├── variables.tf
+│   ├── outputs.tf
+│   └── versions.tf
+└── README.md
+```
 
-## Prerequisites
+---
 
-- An AWS account
-- [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
-- [Terraform](https://developer.hashicorp.com/terraform/install) 1.6+
+## 🚀 Deploy it yourself
+
+### Prerequisites
+
+- An AWS account with programmatic access configured
+- [AWS CLI v2](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
+- [Terraform](https://developer.hashicorp.com/terraform/install) ≥ 1.6
 - Git and a GitHub account
 
-## 1. Configure AWS access
-
-Use an AWS CLI profile or AWS IAM Identity Center. Check that access works:
+### 1. Fork or clone this repository
 
 ```bash
-aws sts get-caller-identity
+git clone https://github.com/mtzanida/bousbis-tiny-tale-machine.git
+cd bousbis-tiny-tale-machine
 ```
 
-Do not add AWS access keys to this repository.
+### 2. Configure AWS access
 
-## 2. Deploy the backend with Terraform
+```bash
+aws configure          # enter your access key, secret, and region (e.g. eu-central-1)
+aws sts get-caller-identity   # verify it works
+```
+
+The IAM user needs permissions to create Lambda, IAM roles, and CloudWatch log groups. See [Security notes](#-security-and-cost-notes) for the minimum policy.
+
+### 3. Deploy the backend with Terraform
 
 ```bash
 cd terraform
 terraform init
-terraform fmt -check
-terraform validate
 terraform plan
-terraform apply
+terraform apply        # type yes to confirm
 ```
 
-Confirm by typing `yes`. Terraform prints an output similar to:
+Terraform prints the Lambda Function URL when done:
 
 ```text
-lambda_function_url = "https://example.lambda-url.eu-central-1.on.aws/"
+lambda_function_url = "https://xxxxxxxxxxxx.lambda-url.eu-central-1.on.aws/"
 ```
 
-Copy that complete URL.
+### 4. Connect the frontend
 
-## 3. Connect the frontend
-
-Open `frontend/config.js` and replace:
+Open `frontend/config.js` and replace the placeholder with your URL:
 
 ```javascript
-LAMBDA_URL: "PASTE_YOUR_LAMBDA_FUNCTION_URL_HERE"
-```
-
-with the URL returned by Terraform:
-
-```javascript
-LAMBDA_URL: "https://example.lambda-url.eu-central-1.on.aws/"
+window.APP_CONFIG = {
+  LAMBDA_URL: "https://xxxxxxxxxxxx.lambda-url.eu-central-1.on.aws/"
+};
 ```
 
 Commit and push the change.
 
-## 4. Publish with GitHub Pages
+### 5. Enable GitHub Pages
 
-1. Open the repository on GitHub.
-2. Go to **Settings → Pages**.
-3. Under **Build and deployment**, choose **GitHub Actions** as the source.
-4. Open the **Actions** tab and wait for `Deploy frontend to GitHub Pages` to finish.
-5. The live URL will be shown in the successful workflow and in **Settings → Pages**.
+1. Go to **Settings → Pages** in your repository.
+2. Under **Build and deployment → Source**, select **GitHub Actions**.
+3. Open the **Actions** tab and wait for `Deploy frontend to GitHub Pages` to finish.
+4. Your site is live at `https://YOUR-USERNAME.github.io/bousbis-tiny-tale-machine/`
 
-Every later push that changes the `frontend` directory deploys automatically.
+Every subsequent push that changes the `frontend/` directory redeploys automatically.
 
-## Test the backend locally
+---
+
+## 🧪 Test locally
+
+Run the unit tests:
 
 ```bash
 cd lambda
 python3 -m unittest -v
 ```
 
-Test the deployed endpoint:
+Test the deployed endpoint with curl:
 
 ```bash
 curl -X POST "YOUR_LAMBDA_FUNCTION_URL" \
@@ -102,58 +149,45 @@ curl -X POST "YOUR_LAMBDA_FUNCTION_URL" \
   -d '{"name":"Anastasia","animal":"tiny blue elephant","place":"the Castle Above the Clouds","mood":"magical"}'
 ```
 
-## Security and cost notes
+---
 
-- The public Function URL is intentional: visitors need to generate stories without AWS credentials.
-- The Lambda role only receives AWS's basic logging policy.
-- Inputs are length-limited and cleaned before being used.
-- No personal data or generated story is persisted.
-- The function uses 128 MB memory and a five-second timeout.
-- This small demonstration should remain within the Lambda free allowance under normal challenge traffic, but AWS usage should always be monitored.
-- Consider changing `allowed_origin` in Terraform from `*` to your final GitHub Pages origin after deployment.
+## 🔒 Security and cost notes
 
-Example:
+- **Public endpoint** — the Function URL has no auth by default so visitors can generate stories without AWS credentials. This is intentional for a public demo.
+- **Least-privilege IAM** — the Lambda execution role only has `AWSLambdaBasicExecutionRole` (write logs). Nothing else.
+- **Input sanitisation** — all inputs are length-limited and stripped of special characters before use.
+- **No data persistence** — no story or personal detail is ever stored anywhere.
+- **Cost** — Lambda free tier covers 1 million requests/month. This demo stays well within that under normal traffic. Always monitor your AWS usage.
+- **CORS** — `allowed_origin` is set to `*` by default. After deployment, tighten it to your GitHub Pages domain in `terraform/terraform.tfvars`:
 
 ```hcl
 allowed_origin = "https://YOUR-USERNAME.github.io"
 ```
 
-## Remove the AWS resources
+Then run `terraform apply` again to update.
 
-When you no longer want to host the backend:
+---
+
+## 🗑️ Tear down
+
+When you no longer need the backend:
 
 ```bash
 cd terraform
-terraform destroy
+terraform destroy      # review the plan, then type yes
 ```
 
-Type `yes` only after checking the resources Terraform plans to remove.
+This removes the Lambda function, IAM role, and CloudWatch log group. The GitHub Pages frontend is free and can stay up indefinitely.
 
-## Project structure
+---
 
-```text
-.
-├── .github/workflows/deploy-pages.yml
-├── frontend/
-│   ├── index.html
-│   ├── style.css
-│   ├── config.js
-│   └── app.js
-├── lambda/
-│   ├── lambda_function.py
-│   └── test_lambda_function.py
-├── terraform/
-│   ├── main.tf
-│   ├── variables.tf
-│   ├── outputs.tf
-│   └── versions.tf
-└── README.md
-```
-
-## Author
+## 👩‍💻 Author
 
 **Maria Tzanidaki** — AWS Community Builder, Serverless
+[GitHub](https://github.com/mtzanida)
+
+---
 
 ## License
 
-MIT
+[MIT](LICENSE)
