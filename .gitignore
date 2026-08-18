@@ -1,9 +1,37 @@
-.DS_Store
+# Terraform
 .terraform/
 *.tfstate
 *.tfstate.*
+*.tfstate.backup
 *.tfplan
+.terraform.lock.hcl
 terraform/lambda_function.zip
+
+# tfvars — keep the example, ignore real values
+terraform/tfvars/*.tfvars
+!terraform/tfvars/*.tfvars.example
+
+# Python
 __pycache__/
 *.pyc
+*.pyo
+
+# macOS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Environment / secrets
+.env
+.env.*
+
+# Drafts
 article-aws-builders.md
